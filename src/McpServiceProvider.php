@@ -2,6 +2,7 @@
 
 namespace Nathan\LaravelMcp;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Nathan\LaravelMcp\Commands\McpServeCommand;
 use Nathan\LaravelMcp\Security\AuditLogger;
@@ -20,6 +21,8 @@ class McpServiceProvider extends ServiceProvider
                 McpServeCommand::class,
             ]);
         }
+
+        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
     }
 
     public function register(): void

@@ -19,7 +19,10 @@ class McpServeCommand extends Command
 {
     protected $signature = 'mcp:serve';
 
-    protected $description = 'Start MCP server for AI agent interaction via stdio';
+    protected $description = 'Start MCP server for AI agent interaction via stdio.
+
+For HTTP, set MCP_HTTP_ENABLED=true in .env and access the route (default: /mcp).
+Requires: composer require nyholm/psr7 nyholm/psr7-server';
 
     public function handle(): int
     {

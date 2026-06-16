@@ -7,12 +7,13 @@ return [
         'instructions' => env('MCP_SERVER_INSTRUCTIONS', 'Laravel MCP Server – debug and manage your Laravel application via AI agents.'),
     ],
 
+    'http' => [
+        'enabled' => env('MCP_HTTP_ENABLED', false),
+        'path' => env('MCP_HTTP_PATH', 'mcp'),
+    ],
+
     'transport' => [
         'default' => env('MCP_TRANSPORT', 'stdio'),
-        'http' => [
-            'host' => env('MCP_HTTP_HOST', '0.0.0.0'),
-            'port' => env('MCP_HTTP_PORT', 8080),
-        ],
     ],
 
     'auth' => [
