@@ -1,12 +1,12 @@
 # Transport: STDIO
 
-STDIO transport dùng để kết nối AI agent với Laravel MCP server qua **standard input/output**. Đây là transport đơn giản nhất, thường được dùng với SSH tunnel.
+STDIO transport connects the AI agent to the Laravel MCP server via **standard input/output**. It is the simplest transport, typically used with an SSH tunnel.
 
-## Cách hoạt động
+## How it works
 
-Agent chạy lệnh `php artisan mcp:serve` trên server, giao tiếp qua stdin/stdout bằng JSON-RPC 2.0.
+The agent runs `php artisan mcp:serve` on the server and communicates through stdin/stdout using JSON-RPC 2.0.
 
-## Cấu hình Claude CLI
+## Claude CLI Configuration
 
 ### Linux / macOS
 
@@ -25,7 +25,7 @@ Agent chạy lệnh `php artisan mcp:serve` trên server, giao tiếp qua stdin/
 }
 ```
 
-### Nếu có sẵn PHP local
+### Local PHP
 
 ```json
 {
@@ -40,14 +40,14 @@ Agent chạy lệnh `php artisan mcp:serve` trên server, giao tiếp qua stdin/
 
 ## SSH Key
 
-Nên dùng SSH key pair thay vì password. Tạo dedicated deploy key với quyền tối thiểu:
+Use SSH key pairs instead of passwords. Create a dedicated deploy key:
 
 ```bash
 ssh-keygen -t ed25519 -f ~/.ssh/mcp-deploy -C "mcp-agent"
 cat ~/.ssh/mcp-deploy.pub >> ~/.ssh/authorized_keys
 ```
 
-Cấu hình SSH để keep alive:
+SSH keep-alive config:
 
 ```
 Host example.com
@@ -57,14 +57,14 @@ Host example.com
     ServerAliveCountMax 3
 ```
 
-## Ưu điểm
+## Pros
 
-- Không cần expose port HTTP
-- Không cần cài thêm package PSR-7
-- Bảo mật qua SSH
-- Đơn giản, dễ setup
+- No HTTP port exposure needed
+- No extra PSR-7 packages required
+- SSH provides transport encryption
+- Simple to set up
 
-## Nhược điểm
+## Cons
 
-- Cần SSH access
-- Không dùng được nếu agent ở network khác không SSH được
+- Requires SSH access to the server
+- Not suitable when agent cannot SSH directly

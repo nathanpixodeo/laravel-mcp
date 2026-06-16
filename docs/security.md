@@ -2,24 +2,24 @@
 
 ## Overview
 
-Laravel MCP được thiết kế với security-first approach. Mọi tool đều được kiểm tra quyền trước khi thực thi.
+Laravel MCP is designed with a security-first approach. Every tool is checked against configured policies before execution.
 
 ## Authentication
 
 ### STDIO transport
 
-Auth tự động bypass khi dùng CLI (vì đã được bảo vệ bởi SSH).
+Auth is automatically bypassed when using CLI (SSH provides the security layer).
 
 ### HTTP transport
 
-Auth dùng Bearer token. Bật trong `.env`:
+Auth uses a Bearer token. Enable in `.env`:
 
 ```
 MCP_AUTH_ENABLED=true
 MCP_AUTH_TOKEN=<your-token>
 ```
 
-Agent gửi token qua header:
+Agent sends token via header:
 ```
 Authorization: Bearer <your-token>
 ```
@@ -28,56 +28,56 @@ Authorization: Bearer <your-token>
 
 ### Artisan
 
-- **allowed_commands**: Chỉ cho phép command trong danh sách (`'*'` = tất cả)
-- **blocked_commands**: Chặn command nguy hiểm:
-  - `db:wipe` — xoá toàn bộ database
-  - `migrate:fresh` — drop tất cả tables
+- **allowed_commands**: Only allow listed commands (`'*'` = all)
+- **blocked_commands**: Block dangerous commands:
+  - `db:wipe` — drops entire database
+  - `migrate:fresh` — drops all tables
   - `migrate:reset` — rollback migrations
-  - `key:generate` — đổi APP_KEY, invalidate sessions
-  - `env:encrypt` — encrypt .env
+  - `key:generate` — changes APP_KEY, invalidates sessions
+  - `env:encrypt` — encrypts .env
 
 ### Database
 
-- **readonly mode** (mặc định: `true`): Chặn mọi câu SQL không phải SELECT
-- **max_rows** (mặc định: 200): Giới hạn số dòng trả về
-- **Parameterized queries**: Tất cả bindings đều qua prepared statements
+- **readonly mode** (default: `true`): Blocks all non-SELECT SQL
+- **max_rows** (default: 200): Limits returned rows
+- **Parameterized queries**: All bindings use prepared statements
 
 ### Filesystem
 
-- **allowed_paths** (mặc định: `[base_path()]`): Chỉ cho đọc/ghi file trong project
-- **Path traversal detection**: Tự động chặn `..` trong path
-- **readonly mode** (mặc định: `false`): Khi bật, chặn mọi `file_write`
+- **allowed_paths** (default: `[base_path()]`): Restrict access to project files
+- **Path traversal detection**: Auto-blocks `..` in paths
+- **readonly mode** (default: `false`): When enabled, blocks all `file_write`
 
 ### Config
 
-- **allowed_keys** (mặc định: `app.*, database.*, cache.*, ...`): Chỉ cho đọc keys được liệt kê. Không cho đọc `.env` trực tiếp.
+- **allowed_keys** (default: `app.*, database.*, cache.*, ...`): Only expose whitelisted keys. Cannot read `.env` directly.
 
 ## Audit Logging
 
-Tất cả tool calls đều được log với:
+All tool calls are logged with:
 
 - Tool name
-- Parameters (sanitized: mật khẩu, token bị redact)
+- Parameters (sanitized — passwords, tokens are redacted)
 - Status (success / denied / error)
-- Error message (nếu có)
-- IP address (hoặc `cli` nếu dùng stdio)
+- Error message (if any)
+- IP address (or `cli` for stdio)
 - Timestamp
 
-Log channel: `stack` (mặc định), configurable qua `MCP_LOG_CHANNEL`.
+Log channel: `stack` (default), configurable via `MCP_LOG_CHANNEL`.
 
-Tắt audit log:
+Disable audit logging:
 ```
 MCP_AUDIT_ENABLED=false
 ```
 
-## Security Checklist cho Production
+## Production Security Checklist
 
-- [ ] Dùng SSH tunnel (stdio) thay vì HTTP nếu có thể
-- [ ] Nếu dùng HTTP: bật auth token, dùng token dài (> 32 ký tự)
-- [ ] Nếu dùng HTTP: luôn dùng HTTPS
-- [ ] Config blocked_commands phù hợp
-- [ ] Bật DB readonly mode
-- [ ] Review allowed_paths cho filesystem
-- [ ] Bật audit logging
-- [ ] Rate limit endpoint `/mcp` trên nginx
-- [ ]定期 review audit logs
+- [ ] Use SSH tunnel (stdio) over HTTP when possible
+- [ ] If using HTTP: enable auth token, use > 32 chars
+- [ ] If using HTTP: always use HTTPS
+- [ ] Configure blocked_commands appropriately
+- [ ] Enable DB readonly mode
+- [ ] Review allowed_paths for filesystem
+- [ ] Enable audit logging
+- [ ] Rate limit `/mcp` endpoint on nginx
+- [ ] Periodically review audit logs

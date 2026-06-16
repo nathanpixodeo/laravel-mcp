@@ -27,17 +27,21 @@ class AuditLogger
     private function sanitizeParams(string $tool, array $params): array
     {
         $sensitive = ['password', 'secret', 'token', 'key', 'auth'];
+        $result = [];
 
-        return array_map(function ($key, $value) use ($sensitive) {
+        foreach ($params as $key => $value) {
             foreach ($sensitive as $s) {
                 if (str_contains(strtolower($key), $s)) {
-                    return '***REDACTED***';
+                    $value = '***REDACTED***';
+                    break;
                 }
             }
             if (is_string($value) && strlen($value) > 1000) {
-                return substr($value, 0, 1000) . '... (truncated)';
+                $value = substr($value, 0, 1000) . '... (truncated)';
             }
-            return $value;
-        }, array_keys($params), $params);
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 }

@@ -1,14 +1,14 @@
 # Laravel MCP
 
-MCP (Model Context Protocol) server cho Laravel. Cho phép AI agents (Claude CLI, Claude Desktop, Cursor, etc.) kết nối đến Laravel project để debug, kiểm tra, và quản lý từ xa qua SSH tunnel hoặc HTTP.
+MCP (Model Context Protocol) server for Laravel. Lets AI agents (Claude CLI, Claude Desktop, Cursor, etc.) connect to your Laravel projects via SSH tunnel or HTTP to debug, inspect, and manage them remotely.
 
 ## Features
 
 - 11 built-in tools: artisan, database, filesystem, logs, routes, config, env
-- **2 transports**: stdio (SSH tunnel) và HTTP (route)
+- **2 transports**: stdio (SSH tunnel) and HTTP (route)
 - **Security**: auth token, path whitelist, artisan command blocking, read-only modes
-- **Audit logging**: tất cả tool calls đều được ghi log
-- **Config-driven**: bật/tắt từng tool group, whitelist keys, v.v.
+- **Audit logging**: all tool calls are logged
+- **Config-driven**: enable/disable tool groups, whitelist keys, etc.
 
 ## Installation
 
@@ -16,7 +16,7 @@ MCP (Model Context Protocol) server cho Laravel. Cho phép AI agents (Claude CLI
 composer require nathanpixodeo/laravel-mcp
 ```
 
-Nếu dùng HTTP transport, cần thêm:
+For HTTP transport, also need:
 
 ```bash
 composer require nyholm/psr7 nyholm/psr7-server
@@ -30,15 +30,15 @@ php artisan vendor:publish --tag=mcp-config
 
 ## Usage
 
-### Transport 1: STDIO (qua SSH tunnel)
+### Transport 1: STDIO (via SSH tunnel)
 
-Trên server:
+On the server:
 
 ```bash
 php artisan mcp:serve
 ```
 
-Cấu hình trong Claude Desktop / Claude CLI (`claude_desktop_config.json`):
+Configure Claude Desktop / Claude CLI (`claude_desktop_config.json`):
 
 ```json
 {
@@ -51,9 +51,9 @@ Cấu hình trong Claude Desktop / Claude CLI (`claude_desktop_config.json`):
 }
 ```
 
-### Transport 2: HTTP (qua route)
+### Transport 2: HTTP (via route)
 
-Set trong `.env`:
+Set in `.env`:
 
 ```
 MCP_HTTP_ENABLED=true
@@ -61,9 +61,9 @@ MCP_AUTH_ENABLED=true
 MCP_AUTH_TOKEN=your-secure-token
 ```
 
-Mặc định route là `/mcp`. Có thể đổi qua env `MCP_HTTP_PATH`.
+Default route is `/mcp`. Change via `MCP_HTTP_PATH` env.
 
-Agent sẽ connect tới: `https://example.com/mcp` với header `Authorization: Bearer your-secure-token`.
+Agent connects to: `https://example.com/mcp` with header `Authorization: Bearer your-secure-token`.
 
 ## Available Tools
 
@@ -119,7 +119,7 @@ MCP_LOG_CHANNEL=stack
     ],
     'database' => [
         'enabled' => true,
-        'readonly' => true,   // Chặn INSERT/UPDATE/DELETE/DROP/ALTER
+        'readonly' => true,   // Blocks INSERT/UPDATE/DELETE/DROP/ALTER
         'max_rows' => 200,
     ],
     'filesystem' => [
@@ -139,14 +139,21 @@ MCP_LOG_CHANNEL=stack
 | Feature | Description |
 |---------|-------------|
 | Auth token | Bearer token validation (HTTP transport) |
-| Artisan whitelist | Chỉ cho phép command được liệt kê |
-| Artisan blocklist | Chặn command nguy hiểm (db:wipe, migrate:fresh, ...) |
-| DB readonly | Tự động chặn câu SQL không phải SELECT |
-| Max rows | Giới hạn số dòng trả về từ database |
-| Path validation | Không cho đọc/ghi file ngoài allowed_paths |
-| FS readonly | Chế độ chỉ đọc cho filesystem |
-| Config whitelist | Chỉ cho phép đọc config keys được liệt kê |
-| Audit log | Ghi lại tất cả tool calls vào Laravel log |
+| Artisan whitelist | Only allow listed commands |
+| Artisan blocklist | Block dangerous commands (db:wipe, migrate:fresh, ...) |
+| DB readonly | Auto-block non-SELECT SQL |
+| Max rows | Limit query result rows |
+| Path validation | Restrict file access to allowed directories |
+| FS readonly | Read-only filesystem mode |
+| Config whitelist | Only expose whitelisted config keys |
+| Audit log | Log all tool calls to Laravel log |
+
+## Testing
+
+```bash
+composer install
+vendor/bin/phpunit
+```
 
 ## Development
 

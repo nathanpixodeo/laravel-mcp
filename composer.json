@@ -1,12 +1,17 @@
 {
     "name": "nathanpixodeo/laravel-mcp",
-    "description": "MCP (Model Context Protocol) server for Laravel - cho phép AI agents debug production/demo qua CLI",
+    "description": "MCP (Model Context Protocol) server for Laravel - debug production/demo via AI agents",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "laravel/framework": "^10.0 || ^11.0 || ^12.0 || ^13.0",
         "mcp/sdk": "^0.6"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
+        "phpunit/phpunit": "^10.5 || ^11.0 || ^12.0"
     },
     "suggest": {
         "nyholm/psr7": "Required for HTTP transport support",
@@ -17,6 +22,11 @@
             "Nathan\\LaravelMcp\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Nathan\\LaravelMcp\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -25,7 +35,10 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true

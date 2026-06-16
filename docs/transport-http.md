@@ -1,14 +1,14 @@
 # Transport: HTTP
 
-HTTP transport dùng để kết nối AI agent với Laravel MCP server qua một **route HTTP** trong Laravel application. Thích hợp cho production khi agent cần connect từ xa mà không cần SSH.
+HTTP transport connects the AI agent to the Laravel MCP server via a **route** in your Laravel application. Suitable for production when agents need remote access without SSH.
 
-## Yêu cầu
+## Requirements
 
 ```bash
 composer require nyholm/psr7 nyholm/psr7-server
 ```
 
-## Cấu hình
+## Configuration
 
 ### .env
 
@@ -19,13 +19,13 @@ MCP_AUTH_ENABLED=true
 MCP_AUTH_TOKEN=your-super-secret-token
 ```
 
-### Mặc định
+### Defaults
 
 - Route: `https://example.com/mcp`
 - Method: POST (MCP Streamable HTTP)
 - Auth: Bearer token
 
-## Cấu hình Claude CLI
+## Claude CLI Configuration
 
 ```json
 {
@@ -40,18 +40,18 @@ MCP_AUTH_TOKEN=your-super-secret-token
 }
 ```
 
-## Bảo mật
+## Security
 
 ### Auth token
 
-Luôn bật auth token khi dùng HTTP transport:
+Always enable auth token when using HTTP transport:
 
 ```
 MCP_AUTH_ENABLED=true
 MCP_AUTH_TOKEN=<random-64-char-string>
 ```
 
-Tạo token:
+Generate a token:
 
 ```bash
 php -r "echo bin2hex(random_bytes(32));"
@@ -59,7 +59,7 @@ php -r "echo bin2hex(random_bytes(32));"
 
 ### Nginx
 
-Nên restrict method và rate limit:
+Restrict methods and apply rate limiting:
 
 ```nginx
 location /mcp {
@@ -71,33 +71,32 @@ location /mcp {
 
 ### HTTPS
 
-Luôn dùng HTTPS. Redirect HTTP → HTTPS.
+Always use HTTPS. Redirect HTTP → HTTPS.
 
-## Ưu điểm
+## Pros
 
-- Agent connect trực tiếp qua URL
-- Không cần SSH
-- Dễ tích hợp với cloud IDE, CI/CD
+- Agent connects directly via URL
+- No SSH required
+- Easy integration with cloud IDE, CI/CD
 
-## Nhược điểm
+## Cons
 
-- Cần expose endpoint ra internet
-- Cần auth token để bảo mật
-- Cần cài thêm PSR-7 packages
+- Endpoint exposed to internet
+- Requires auth token for security
+- Extra PSR-7 packages needed
 
 ## Troubleshooting
 
 ### 500 Missing PSR-7 implementation
 
-Chạy:
 ```bash
 composer require nyholm/psr7 nyholm/psr7-server
 ```
 
 ### 401 Unauthorized
 
-Kiểm tra `MCP_AUTH_TOKEN` trong `.env` và `Authorization` header trong config agent.
+Check `MCP_AUTH_TOKEN` in `.env` and `Authorization` header in agent config.
 
 ### Route not found
 
-Kiểm tra `MCP_HTTP_ENABLED=true` và `MCP_HTTP_PATH` (mặc định `mcp`). Nhớ `php artisan config:clear` nếu dùng env.
+Check `MCP_HTTP_ENABLED=true` and `MCP_HTTP_PATH` (default: `mcp`). Run `php artisan config:clear` after changing env.
