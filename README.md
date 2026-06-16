@@ -13,7 +13,7 @@ MCP (Model Context Protocol) server cho Laravel. Cho phép AI agents (Claude CLI
 ## Installation
 
 ```bash
-composer require nathan/laravel-mcp
+composer require nathanpixodeo/laravel-mcp
 ```
 
 Nếu dùng HTTP transport, cần thêm:

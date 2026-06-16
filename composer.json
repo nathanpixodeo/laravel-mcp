@@ -1,5 +1,5 @@
 {
-    "name": "nathan/laravel-mcp",
+    "name": "nathanpixodeo/laravel-mcp",
     "description": "MCP (Model Context Protocol) server for Laravel - cho phép AI agents debug production/demo qua CLI",
     "type": "library",
     "license": "MIT",
